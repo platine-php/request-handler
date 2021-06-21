@@ -8,6 +8,7 @@
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Request Handler
+ * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +48,6 @@ declare(strict_types=1);
 namespace Platine\Http\Handler;
 
 use InvalidArgumentException;
-use Platine\Http\Handler\Middleware\MiddlewareInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
@@ -57,13 +57,14 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * The list of middlewares
-     * @var array
+     * @var MiddlewareInterface[]
      */
     protected array $middlewares = [];
 
     /**
      * Create new instance of RequestHandler
-     * @param array $middlewares the default list of middlewares
+     * @param MiddlewareInterface[] $middlewares the default
+     * list of middlewares
      */
     public function __construct(array $middlewares = [])
     {
@@ -97,7 +98,7 @@ class RequestHandler implements RequestHandlerInterface
         $handler = clone $this;
 
         if (key($handler->middlewares) === null) {
-            return new Response(200);
+            return new Response(404);
         }
 
         $middleware = current($handler->middlewares);

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Platine\Test\Http;
 
 use InvalidArgumentException;
+use Platine\Dev\PlatineTestCase;
 use Platine\Http\Handler\RequestHandler;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
-use Platine\PlatineTestCase;
-use Platine\Test\Fixture\MiddlewareResolverMiddlewareInstance;
+use Platine\Test\Fixture\CallableResolverMiddlewareInstance;
 
 /**
  * RequestHandler class tests
@@ -33,12 +33,12 @@ class RequestHandlerTest extends PlatineTestCase
         $c = new RequestHandler();
         $this->assertCount(0, $reflection->getValue($c));
 
-        $c = new RequestHandler(array(new MiddlewareResolverMiddlewareInstance()));
+        $c = new RequestHandler(array(new CallableResolverMiddlewareInstance()));
         $this->assertCount(1, $reflection->getValue($c));
 
         //Route Already exists
         $this->expectException(InvalidArgumentException::class);
-        $c = new RequestHandler(array(new MiddlewareResolverMiddlewareInstance(), 123));
+        $c = new RequestHandler(array(new CallableResolverMiddlewareInstance(), 123));
     }
 
     public function testUse(): void
@@ -48,11 +48,11 @@ class RequestHandlerTest extends PlatineTestCase
         $c = new RequestHandler();
         $this->assertCount(0, $reflection->getValue($c));
 
-        $c->use(new MiddlewareResolverMiddlewareInstance());
+        $c->use(new CallableResolverMiddlewareInstance());
         $this->assertCount(1, $reflection->getValue($c));
     }
 
-    public function testHandleNoMiddleware(): void
+    public function testHandleNoMiddlewareReturnResponse(): void
     {
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
@@ -61,7 +61,7 @@ class RequestHandlerTest extends PlatineTestCase
         $resp = $c->handle($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $resp);
-        $this->assertEquals(200, $resp->getStatusCode());
+        $this->assertEquals(404, $resp->getStatusCode());
         $this->assertEmpty($resp->getBody()->getContents());
     }
 
@@ -71,11 +71,11 @@ class RequestHandlerTest extends PlatineTestCase
                 ->getMock();
 
         $c = new RequestHandler();
-        $c->use(new MiddlewareResolverMiddlewareInstance());
+        $c->use(new CallableResolverMiddlewareInstance());
         $resp = $c->handle($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverMiddlewareInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverMiddlewareInstance::class, $resp->getBody());
     }
 }

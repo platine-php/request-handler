@@ -8,6 +8,7 @@
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Request Handler
+ * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +30,11 @@
  */
 
 /**
- *  @file MiddlewareResolver.php
+ *  @file CallableResolver.php
  *
- *  The MiddlewareResolver class
+ *  The callable resolver class
  *
- *  @package    Platine\Http\Handler\Middleware
+ *  @package    Platine\Http\Handler
  *  @author Platine Developers Team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -44,16 +45,14 @@
 
 declare(strict_types=1);
 
-namespace Platine\Http\Handler\Middleware;
+namespace Platine\Http\Handler;
 
 use Platine\Container\ContainerInterface;
-use Platine\Http\Handler\Middleware\Exception\MiddlewareResolverException;
-use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\Handler\Exception\CallableResolverException;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
-
-class MiddlewareResolver implements MiddlewareResolverInterface
+class CallableResolver implements CallableResolverInterface
 {
 
     /**
@@ -80,7 +79,7 @@ class MiddlewareResolver implements MiddlewareResolverInterface
      * - a callable without arguments that returns an instance of `ResponseInterface`;
      * - a callable matching signature of `MiddlewareInterface::process()`;
      *
-     * @throws MiddlewareResolverException if the handler is not valid.
+     * @throws CallableResolverException if the handler is not valid.
      */
     public function resolve($handler): MiddlewareInterface
     {
@@ -100,22 +99,29 @@ class MiddlewareResolver implements MiddlewareResolverInterface
             return $this->callableHandler($handler);
         }
 
-        throw MiddlewareResolverException::create($handler);
+        throw CallableResolverException::create($handler);
     }
 
     /**
      * @param  callable $handler the callable handler
      * @return MiddlewareInterface
      *
-     * @throws MiddlewareResolverException 
+     * @throws CallableResolverException
      * if the handler does not return a `ResponseInterface` instance.
      */
     protected function callableHandler(callable $handler): MiddlewareInterface
     {
         return new class ($handler) implements MiddlewareInterface {
 
+            /**
+             *
+             * @var callable
+             */
             private $callable;
 
+            /**
+             * @param callable $callable
+             */
             public function __construct($callable)
             {
                 $this->callable = $callable;
@@ -128,7 +134,7 @@ class MiddlewareResolver implements MiddlewareResolverInterface
                 $response = ($this->callable)($request, $handler);
 
                 if (!$response instanceof ResponseInterface) {
-                    throw MiddlewareResolverException::forCallableMissingResponse($response);
+                    throw CallableResolverException::forCallableMissingResponse($response);
                 }
 
                 return $response;
@@ -164,7 +170,7 @@ class MiddlewareResolver implements MiddlewareResolverInterface
      * @param  string $handler the string handler name
      * @return MiddlewareInterface
      *
-     * @throws MiddlewareResolverException if the handler is not valid
+     * @throws CallableResolverException if the handler is not valid
      */
     protected function stringHandler(string $handler): MiddlewareInterface
     {
@@ -195,7 +201,7 @@ class MiddlewareResolver implements MiddlewareResolverInterface
                     $method = $parts[1];
                 }
 
-                if ($this->container && $this->container->has($class)) {
+                if ($this->container !== null && $this->container->has($class)) {
                     $instance = $this->container->get($class);
                 } elseif (class_exists($class)) {
                     $instance = new $class();
@@ -211,11 +217,10 @@ class MiddlewareResolver implements MiddlewareResolverInterface
                 }
 
                 if ($method !== null && method_exists($instance, $method)) {
-                    $classMethodCallback = [$instance, $method];
-                    return ($classMethodCallback)($request, $handler);
+                    return $instance->{$method}($request, $handler);
                 }
 
-                throw MiddlewareResolverException::forStringNotConvertedToInstance($this->handler);
+                throw CallableResolverException::forStringNotConvertedToInstance($this->handler);
             }
         };
     }

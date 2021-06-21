@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Http\Handler\Middleware;
+namespace Platine\Test\Http\Handler;
 
 use Platine\Container\Container;
-use Platine\Http\Handler\Middleware\Exception\MiddlewareResolverException;
-use Platine\Http\Handler\Middleware\MiddlewareInterface;
-use Platine\Http\Handler\Middleware\MiddlewareResolver;
+use Platine\Dev\PlatineTestCase;
+use Platine\Http\Handler\CallableResolver;
+use Platine\Http\Handler\Exception\CallableResolverException;
+use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandler;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
-use Platine\PlatineTestCase;
-use Platine\Test\Fixture\MiddlewareResolverArrayCallback;
-use Platine\Test\Fixture\MiddlewareResolverMiddlewareInstance;
-use Platine\Test\Fixture\MiddlewareResolverRequestHandlerInstance;
+use Platine\Test\Fixture\CallableResolverArrayCallback;
+use Platine\Test\Fixture\CallableResolverMiddlewareInstance;
+use Platine\Test\Fixture\CallableResolverRequestHandlerInstance;
 use stdClass;
 
 /**
- * MiddlewareResolver class tests
+ * CallableResolver class tests
  *
  * @group core
  * @group middleware
  */
-class MiddlewareResolverTest extends PlatineTestCase
+class CallableResolverTest extends PlatineTestCase
 {
 
     public function testConstructor(): void
@@ -32,21 +32,21 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $rr = $this->getPrivateProtectedAttribute(MiddlewareResolver::class, 'container');
+        $rr = $this->getPrivateProtectedAttribute(CallableResolver::class, 'container');
 
         $this->assertEquals($container, $rr->getValue($resolver));
     }
 
     public function testResolveUsingMiddlewareInstance(): void
     {
-        $middleware = new MiddlewareResolverMiddlewareInstance();
+        $middleware = new CallableResolverMiddlewareInstance();
 
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
         $m = $resolver->resolve($middleware);
 
@@ -61,16 +61,16 @@ class MiddlewareResolverTest extends PlatineTestCase
         $resp = $m->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverMiddlewareInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverMiddlewareInstance::class, $resp->getBody());
     }
 
     public function testResolveUsingRequestHandlerInstance(): void
     {
-        $handler = new MiddlewareResolverRequestHandlerInstance();
+        $handler = new CallableResolverRequestHandlerInstance();
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
         $h = $resolver->resolve($handler);
 
@@ -85,7 +85,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $resp = $h->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverRequestHandlerInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverRequestHandlerInstance::class, $resp->getBody());
     }
 
     public function testResolveUsingCallback(): void
@@ -99,7 +99,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $requestHandler = $this->getMockBuilder(RequestHandler::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
         //Using Closure callback
         $h = $resolver->resolve(function () {
             return new Response();
@@ -112,14 +112,14 @@ class MiddlewareResolverTest extends PlatineTestCase
         $this->assertEquals(200, $resp->getStatusCode());
 
         //Using array callback
-        $h = $resolver->resolve(sprintf('%s@%s', MiddlewareResolverArrayCallback::class, 'create'));
+        $h = $resolver->resolve(sprintf('%s@%s', CallableResolverArrayCallback::class, 'create'));
 
         $this->assertInstanceOf(MiddlewareInterface::class, $h);
 
         $resp = $h->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverArrayCallback::class, $resp->getBody());
+        $this->assertEquals(CallableResolverArrayCallback::class, $resp->getBody());
     }
 
     public function testResolveUsingCallbackNoResponseReturned(): void
@@ -127,7 +127,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
         $h = $resolver->resolve(function () {
         });
@@ -140,7 +140,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $requestHandler = $this->getMockBuilder(RequestHandler::class)
                 ->getMock();
 
-        $this->expectException(MiddlewareResolverException::class);
+        $this->expectException(CallableResolverException::class);
         $resp = $h->process($request, $requestHandler);
     }
 
@@ -155,11 +155,11 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
         $h = $resolver->resolve('not_resolvable_handler');
 
-        $this->expectException(MiddlewareResolverException::class);
+        $this->expectException(CallableResolverException::class);
 
         $resp = $h->process($request, $requestHandler);
     }
@@ -175,14 +175,14 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $h = $resolver->resolve(MiddlewareResolverMiddlewareInstance::class);
+        $h = $resolver->resolve(CallableResolverMiddlewareInstance::class);
 
         $resp = $h->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverMiddlewareInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverMiddlewareInstance::class, $resp->getBody());
     }
 
     public function testResolveUsingStringRequestHandlerClass(): void
@@ -196,14 +196,14 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $h = $resolver->resolve(MiddlewareResolverRequestHandlerInstance::class);
+        $h = $resolver->resolve(CallableResolverRequestHandlerInstance::class);
 
         $resp = $h->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverRequestHandlerInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverRequestHandlerInstance::class, $resp->getBody());
     }
 
     public function testResolveUsingStringContainer(): void
@@ -222,16 +222,16 @@ class MiddlewareResolverTest extends PlatineTestCase
 
         $container->expects($this->any())
                 ->method('get')
-                ->will($this->returnValue(new MiddlewareResolverRequestHandlerInstance()));
+                ->will($this->returnValue(new CallableResolverRequestHandlerInstance()));
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $h = $resolver->resolve(MiddlewareResolverRequestHandlerInstance::class);
+        $h = $resolver->resolve(CallableResolverRequestHandlerInstance::class);
 
         $resp = $h->process($request, $requestHandler);
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals(MiddlewareResolverRequestHandlerInstance::class, $resp->getBody());
+        $this->assertEquals(CallableResolverRequestHandlerInstance::class, $resp->getBody());
     }
 
     public function testResolveUsingInvalidHandlerParamIsObject(): void
@@ -239,9 +239,9 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $this->expectException(MiddlewareResolverException::class);
+        $this->expectException(CallableResolverException::class);
         $h = $resolver->resolve(new stdClass());
     }
 
@@ -250,9 +250,9 @@ class MiddlewareResolverTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new MiddlewareResolver($container);
+        $resolver = new CallableResolver($container);
 
-        $this->expectException(MiddlewareResolverException::class);
+        $this->expectException(CallableResolverException::class);
         $h = $resolver->resolve(12345);
     }
 }

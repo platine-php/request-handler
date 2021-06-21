@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Platine\Test\Fixture;
 
-use Platine\Http\Handler\Middleware\MiddlewareInterface;
+use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
-class MiddlewareResolverMiddlewareInstance implements MiddlewareInterface
+class CallableResolverMiddlewareInstance implements MiddlewareInterface
 {
 
     public function process(
@@ -24,7 +24,7 @@ class MiddlewareResolverMiddlewareInstance implements MiddlewareInterface
     }
 }
 
-class MiddlewareResolverRequestHandlerInstance implements RequestHandlerInterface
+class CallableResolverRequestHandlerInstance implements RequestHandlerInterface
 {
 
     public function handle(
@@ -37,7 +37,7 @@ class MiddlewareResolverRequestHandlerInstance implements RequestHandlerInterfac
     }
 }
 
-class MiddlewareResolverArrayCallback
+class CallableResolverArrayCallback
 {
 
     public function create(

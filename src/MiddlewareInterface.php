@@ -8,6 +8,7 @@
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Request Handler
+ * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +30,9 @@
  */
 
 /**
- *  @file MiddlewareResolverInterface.php
+ *  @file MiddlewareInterface.php
  *
- *  The MiddlewareResolverInterface interface
+ *  The MiddlewareInterface interface
  *
  *  @package    Platine\Http\Handler
  *  @author Platine Developers Team
@@ -44,18 +45,34 @@
 
 declare(strict_types=1);
 
-namespace Platine\Http\Handler\Middleware;
+namespace Platine\Http\Handler;
 
-interface MiddlewareResolverInterface
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequestInterface;
+
+/**
+ * Participant in processing a server request and response.
+ *
+ * An HTTP middleware component participates in processing an HTTP message:
+ * by acting on the request, generating the response, or forwarding the
+ * request to a subsequent middleware and possibly acting on its response.
+ */
+interface MiddlewareInterface
 {
 
     /**
-     * Resolve the request handler by converting it to middleware instance.
+     * Process an incoming server request.
      *
-     * If the handler cannot be resolved or is invalid, an exception may be thrown.
+     * Processes an incoming server request in order to produce a response.
+     * If unable to produce the response itself, it may delegate to the provided
+     * request handler to do so.
      *
-     * @param  mixed $handler
-     * @return MiddlewareInterface
+     * @param  ServerRequestInterface $request
+     * @param  RequestHandlerInterface $handler
+     * @return ResponseInterface
      */
-    public function resolve($handler): MiddlewareInterface;
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface;
 }

@@ -30,14 +30,14 @@
 
 declare(strict_types=1);
 
-namespace Platine\Http\Handler\Middleware\Exception;
+namespace Platine\Http\Handler\Exception;
 
-use Platine\Http\Handler\Middleware\MiddlewareInterface;
+use InvalidArgumentException;
+use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
-use InvalidArgumentException;
 
-class MiddlewareResolverException extends InvalidArgumentException
+class CallableResolverException extends InvalidArgumentException
 {
 
     /**
