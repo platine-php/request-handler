@@ -9,7 +9,7 @@ use Platine\Dev\PlatineTestCase;
 use Platine\Http\Handler\CallableResolver;
 use Platine\Http\Handler\Exception\CallableResolverException;
 use Platine\Http\Handler\MiddlewareInterface;
-use Platine\Http\Handler\RequestHandler;
+use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
@@ -55,7 +55,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resp = $m->process($request, $requestHandler);
@@ -79,7 +79,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resp = $h->process($request, $requestHandler);
@@ -96,7 +96,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resolver = new CallableResolver($container);
@@ -137,11 +137,11 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $this->expectException(CallableResolverException::class);
-        $resp = $h->process($request, $requestHandler);
+        $h->process($request, $requestHandler);
     }
 
     public function testResolveUsingStringNotResolvable(): void
@@ -149,7 +149,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -169,7 +169,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -190,7 +190,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -211,7 +211,7 @@ class CallableResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
