@@ -30,7 +30,7 @@
  */
 
 /**
- *  @file CallableResolver.php
+ *  @file MiddlewareResolver.php
  *
  *  The callable resolver class
  *
@@ -48,11 +48,11 @@ declare(strict_types=1);
 namespace Platine\Http\Handler;
 
 use Platine\Container\ContainerInterface;
-use Platine\Http\Handler\Exception\CallableResolverException;
+use Platine\Http\Handler\Exception\MiddlewareResolverException;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
-class CallableResolver implements CallableResolverInterface
+class MiddlewareResolver implements MiddlewareResolverInterface
 {
 
     /**
@@ -79,7 +79,7 @@ class CallableResolver implements CallableResolverInterface
      * - a callable without arguments that returns an instance of `ResponseInterface`;
      * - a callable matching signature of `MiddlewareInterface::process()`;
      *
-     * @throws CallableResolverException if the handler is not valid.
+     * @throws MiddlewareResolverException if the handler is not valid.
      */
     public function resolve($handler): MiddlewareInterface
     {
@@ -99,14 +99,14 @@ class CallableResolver implements CallableResolverInterface
             return $this->callableHandler($handler);
         }
 
-        throw CallableResolverException::create($handler);
+        throw MiddlewareResolverException::create($handler);
     }
 
     /**
      * @param  callable $handler the callable handler
      * @return MiddlewareInterface
      *
-     * @throws CallableResolverException
+     * @throws MiddlewareResolverException
      * if the handler does not return a `ResponseInterface` instance.
      */
     protected function callableHandler(callable $handler): MiddlewareInterface
@@ -134,7 +134,7 @@ class CallableResolver implements CallableResolverInterface
                 $response = ($this->callable)($request, $handler);
 
                 if (!$response instanceof ResponseInterface) {
-                    throw CallableResolverException::forCallableMissingResponse($response);
+                    throw MiddlewareResolverException::forCallableMissingResponse($response);
                 }
 
                 return $response;
@@ -170,7 +170,7 @@ class CallableResolver implements CallableResolverInterface
      * @param  string $handler the string handler name
      * @return MiddlewareInterface
      *
-     * @throws CallableResolverException if the handler is not valid
+     * @throws MiddlewareResolverException if the handler is not valid
      */
     protected function stringHandler(string $handler): MiddlewareInterface
     {
@@ -220,7 +220,7 @@ class CallableResolver implements CallableResolverInterface
                     return $instance->{$method}($request, $handler);
                 }
 
-                throw CallableResolverException::forStringNotConvertedToInstance($this->handler);
+                throw MiddlewareResolverException::forStringNotConvertedToInstance($this->handler);
             }
         };
     }

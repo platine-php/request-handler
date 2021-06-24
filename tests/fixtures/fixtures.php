@@ -10,7 +10,7 @@ use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
-class CallableResolverMiddlewareInstance implements MiddlewareInterface
+class MiddlewareResolverMiddlewareInstance implements MiddlewareInterface
 {
 
     public function process(
@@ -24,7 +24,7 @@ class CallableResolverMiddlewareInstance implements MiddlewareInterface
     }
 }
 
-class CallableResolverRequestHandlerInstance implements RequestHandlerInterface
+class MiddlewareResolverRequestHandlerInstance implements RequestHandlerInterface
 {
 
     public function handle(
@@ -37,7 +37,7 @@ class CallableResolverRequestHandlerInstance implements RequestHandlerInterface
     }
 }
 
-class CallableResolverArrayCallback
+class MiddlewareResolverArrayCallback
 {
 
     public function create(

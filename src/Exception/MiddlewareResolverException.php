@@ -37,7 +37,7 @@ use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 
-class CallableResolverException extends InvalidArgumentException
+class MiddlewareResolverException extends InvalidArgumentException
 {
 
     /**

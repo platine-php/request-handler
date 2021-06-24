@@ -30,7 +30,7 @@
  */
 
 /**
- *  @file CallableResolverInterface.php
+ *  @file MiddlewareResolverInterface.php
  *
  *  The callable resolver interface
  *
@@ -47,7 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Http\Handler;
 
-interface CallableResolverInterface
+interface MiddlewareResolverInterface
 {
 
     /**
