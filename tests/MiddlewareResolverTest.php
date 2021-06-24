@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Http\Handler\Middleware;
+namespace Platine\Test\Http\Handler;
 
 use Platine\Container\Container;
-use Platine\Http\Handler\Middleware\Exception\MiddlewareResolverException;
-use Platine\Http\Handler\Middleware\MiddlewareInterface;
-use Platine\Http\Handler\Middleware\MiddlewareResolver;
-use Platine\Http\Handler\RequestHandler;
+use Platine\Dev\PlatineTestCase;
+use Platine\Http\Handler\MiddlewareResolver;
+use Platine\Http\Handler\Exception\MiddlewareResolverException;
+use Platine\Http\Handler\MiddlewareInterface;
+use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
-use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\MiddlewareResolverArrayCallback;
 use Platine\Test\Fixture\MiddlewareResolverMiddlewareInstance;
 use Platine\Test\Fixture\MiddlewareResolverRequestHandlerInstance;
@@ -55,7 +55,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resp = $m->process($request, $requestHandler);
@@ -79,7 +79,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resp = $h->process($request, $requestHandler);
@@ -96,7 +96,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $resolver = new MiddlewareResolver($container);
@@ -137,11 +137,11 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $this->expectException(MiddlewareResolverException::class);
-        $resp = $h->process($request, $requestHandler);
+        $h->process($request, $requestHandler);
     }
 
     public function testResolveUsingStringNotResolvable(): void
@@ -149,7 +149,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -169,7 +169,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -190,7 +190,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
@@ -211,7 +211,7 @@ class MiddlewareResolverTest extends PlatineTestCase
         $request = $this->getMockBuilder(ServerRequest::class)
                 ->getMock();
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $container = $this->getMockBuilder(Container::class)
