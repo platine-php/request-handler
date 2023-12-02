@@ -49,7 +49,6 @@ namespace Platine\Http\Handler;
 
 interface MiddlewareResolverInterface
 {
-
     /**
      * Resolve the given callable by converting it to middleware instance.
      *

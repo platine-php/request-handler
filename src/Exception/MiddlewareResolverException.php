@@ -39,7 +39,6 @@ use Platine\Http\ResponseInterface;
 
 class MiddlewareResolverException extends InvalidArgumentException
 {
-
     /**
      * Create the Exception instance
      * @param  mixed $handler

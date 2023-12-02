@@ -54,7 +54,6 @@ use Platine\Http\ServerRequestInterface;
 
 class MiddlewareResolver implements MiddlewareResolverInterface
 {
-
     /**
      * The container instance to use to resolve handler
      * @var ContainerInterface
@@ -112,7 +111,6 @@ class MiddlewareResolver implements MiddlewareResolverInterface
     protected function callableHandler(callable $handler): MiddlewareInterface
     {
         return new class ($handler) implements MiddlewareInterface {
-
             /**
              *
              * @var callable
@@ -149,7 +147,6 @@ class MiddlewareResolver implements MiddlewareResolverInterface
     protected function handler(RequestHandlerInterface $handler): MiddlewareInterface
     {
         return new class ($handler) implements MiddlewareInterface {
-
             private RequestHandlerInterface $handler;
 
             public function __construct(RequestHandlerInterface $handler)
@@ -175,7 +172,6 @@ class MiddlewareResolver implements MiddlewareResolverInterface
     protected function stringHandler(string $handler): MiddlewareInterface
     {
         return new class ($handler, $this->container) implements MiddlewareInterface {
-
             private string $handler;
             private ?ContainerInterface $container;
 

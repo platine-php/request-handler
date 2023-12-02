@@ -26,7 +26,6 @@ use stdClass;
  */
 class MiddlewareResolverTest extends PlatineTestCase
 {
-
     public function testConstructor(): void
     {
         $container = $this->getMockBuilder(Container::class)

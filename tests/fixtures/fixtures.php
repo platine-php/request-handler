@@ -12,7 +12,6 @@ use Platine\Http\ServerRequestInterface;
 
 class MiddlewareResolverMiddlewareInstance implements MiddlewareInterface
 {
-
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -26,7 +25,6 @@ class MiddlewareResolverMiddlewareInstance implements MiddlewareInterface
 
 class MiddlewareResolverRequestHandlerInstance implements RequestHandlerInterface
 {
-
     public function handle(
         ServerRequestInterface $request
     ): ResponseInterface {
@@ -39,7 +37,6 @@ class MiddlewareResolverRequestHandlerInstance implements RequestHandlerInterfac
 
 class MiddlewareResolverArrayCallback
 {
-
     public function create(
         ServerRequestInterface $request
     ): ResponseInterface {

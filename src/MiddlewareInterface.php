@@ -59,7 +59,6 @@ use Platine\Http\ServerRequestInterface;
  */
 interface MiddlewareInterface
 {
-
     /**
      * Process an incoming server request.
      *
