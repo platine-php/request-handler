@@ -51,6 +51,9 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
 /**
+ * @class MiddlewareInterface
+ * @package Platine\Http\Handler
+ *
  * Participant in processing a server request and response.
  *
  * An HTTP middleware component participates in processing an HTTP message:

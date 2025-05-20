@@ -6,9 +6,9 @@ namespace Platine\Test\Http\Handler;
 
 use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;
-use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\Handler\Exception\MiddlewareResolverException;
 use Platine\Http\Handler\MiddlewareInterface;
+use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
@@ -16,7 +16,6 @@ use Platine\Http\ServerRequest;
 use Platine\Test\Fixture\MiddlewareResolverArrayCallback;
 use Platine\Test\Fixture\MiddlewareResolverMiddlewareInstance;
 use Platine\Test\Fixture\MiddlewareResolverRequestHandlerInstance;
-use stdClass;
 
 /**
  * MiddlewareResolver class tests
@@ -231,27 +230,5 @@ class MiddlewareResolverTest extends PlatineTestCase
         $this->assertInstanceOf(ResponseInterface::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
         $this->assertEquals(MiddlewareResolverRequestHandlerInstance::class, $resp->getBody());
-    }
-
-    public function testResolveUsingInvalidHandlerParamIsObject(): void
-    {
-        $container = $this->getMockBuilder(Container::class)
-                ->getMock();
-
-        $resolver = new MiddlewareResolver($container);
-
-        $this->expectException(MiddlewareResolverException::class);
-        $h = $resolver->resolve(new stdClass());
-    }
-
-    public function testResolveUsingInvalidHandlerParamIsScalar(): void
-    {
-        $container = $this->getMockBuilder(Container::class)
-                ->getMock();
-
-        $resolver = new MiddlewareResolver($container);
-
-        $this->expectException(MiddlewareResolverException::class);
-        $h = $resolver->resolve(12345);
     }
 }

@@ -37,35 +37,21 @@ use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 
+/**
+ * @class MiddlewareResolverException
+ * @package Platine\Http\Handler\Exception
+ */
 class MiddlewareResolverException extends InvalidArgumentException
 {
-    /**
-     * Create the Exception instance
-     * @param  mixed $handler
-     * @return self
-     */
-    public static function create($handler): self
-    {
-        return new self(
-            sprintf(
-                'Handler %s must be an instance or name of class that implements "%s" or "%s"' .
-                        ' Interface as well as a PHP callable.',
-                self::convertToString($handler),
-                MiddlewareInterface::class,
-                RequestHandlerInterface::class
-            )
-        );
-    }
-
     /**
      * @param  mixed $response
      * @return self
      */
-    public static function forCallableMissingResponse($response): self
+    public static function forCallableMissingResponse(mixed $response): self
     {
         return new self(
             sprintf(
-                'Callable handler must returned an instance "%s"; but received "%s"' .
+                'Callable handler must returned an instance of "%s"; but received "%s"' .
                         ' Interface as well as a PHP callable.',
                 ResponseInterface::class,
                 self::convertToString($response)
@@ -95,7 +81,7 @@ class MiddlewareResolverException extends InvalidArgumentException
      * @param  mixed $data
      * @return string
      */
-    protected static function convertToString($data): string
+    protected static function convertToString(mixed $data): string
     {
         return is_scalar($data)
                 ? (string) $data

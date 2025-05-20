@@ -51,6 +51,9 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
 /**
+ * @class RequestHandlerInterface
+ * @package Platine\Http\Handler
+ *
  * Handles a server request and produces a response.
  *
  * An HTTP request handler process an HTTP request in order to produce an

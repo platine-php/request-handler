@@ -52,21 +52,19 @@ use Platine\Http\Handler\Exception\MiddlewareResolverException;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 
+/**
+ * @class MiddlewareResolver
+ * @package Platine\Http\Handler
+ */
 class MiddlewareResolver implements MiddlewareResolverInterface
 {
     /**
-     * The container instance to use to resolve handler
-     * @var ContainerInterface
-     */
-    protected ?ContainerInterface $container;
-
-    /**
      * Create new resolver instance
-     * @param ContainerInterface|null $container
+     * @param ContainerInterface|null $container The container instance
+     * to use to resolve handler
      */
-    public function __construct(?ContainerInterface $container = null)
+    public function __construct(protected ?ContainerInterface $container = null)
     {
-        $this->container = $container;
     }
 
     /**
@@ -80,8 +78,9 @@ class MiddlewareResolver implements MiddlewareResolverInterface
      *
      * @throws MiddlewareResolverException if the handler is not valid.
      */
-    public function resolve($handler): MiddlewareInterface
-    {
+    public function resolve(
+        string|MiddlewareInterface|RequestHandlerInterface|callable $handler
+    ): MiddlewareInterface {
         if ($handler instanceof MiddlewareInterface) {
             return $handler;
         }
@@ -94,18 +93,13 @@ class MiddlewareResolver implements MiddlewareResolverInterface
             return $this->stringHandler($handler);
         }
 
-        if (is_callable($handler)) {
-            return $this->callableHandler($handler);
-        }
-
-        throw MiddlewareResolverException::create($handler);
+        return $this->callableHandler($handler);
     }
 
     /**
      * @param  callable $handler the callable handler
      * @return MiddlewareInterface
      *
-     * @throws MiddlewareResolverException
      * if the handler does not return a `ResponseInterface` instance.
      */
     protected function callableHandler(callable $handler): MiddlewareInterface
@@ -167,7 +161,6 @@ class MiddlewareResolver implements MiddlewareResolverInterface
      * @param  string $handler the string handler name
      * @return MiddlewareInterface
      *
-     * @throws MiddlewareResolverException if the handler is not valid
      */
     protected function stringHandler(string $handler): MiddlewareInterface
     {

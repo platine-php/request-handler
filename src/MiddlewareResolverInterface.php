@@ -47,6 +47,10 @@ declare(strict_types=1);
 
 namespace Platine\Http\Handler;
 
+/**
+ * @class MiddlewareResolverInterface
+ * @package Platine\Http\Handler
+ */
 interface MiddlewareResolverInterface
 {
     /**
@@ -54,8 +58,10 @@ interface MiddlewareResolverInterface
      *
      * If the handler cannot be resolved or is invalid, an exception may be thrown.
      *
-     * @param  mixed $handler
+     * @param  string|MiddlewareInterface|RequestHandlerInterface|callable $handler
      * @return MiddlewareInterface
      */
-    public function resolve($handler): MiddlewareInterface;
+    public function resolve(
+        string|MiddlewareInterface|RequestHandlerInterface|callable $handler
+    ): MiddlewareInterface;
 }
